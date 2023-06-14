@@ -1,15 +1,10 @@
 import { IGetUsersRepository } from '../../controllers/getUsers/protocols'
 import { User } from '../../models/user'
+import prisma from '../../lib/prisma'
 
 export class PrismaGetUsersRepository implements IGetUsersRepository {
   async getUsers(): Promise<User[]> {
-    return [
-      {
-        firstName: 'luis',
-        lastName: 'gabriel',
-        email: 'luisgasbriel@gmail.com',
-        password: '94443572',
-      },
-    ]
+    const user = await prisma.user.findMany()
+    return user
   }
 }
