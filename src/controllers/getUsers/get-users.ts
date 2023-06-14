@@ -8,7 +8,6 @@ export class GetUsersController implements IGetUsersController {
   async handle() {
     try {
       const users = await this.getUsersRepository.getUsers()
-
       return {
         statusCode: 200,
         body: users,
