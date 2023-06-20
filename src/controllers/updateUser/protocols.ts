@@ -4,7 +4,7 @@ import { HttpRequest, HttpResponse } from '../protocols'
 export interface IUpdateUserParams {
   firstName?: string
   lastName?: string
-  email?: string
+  password?: string
 }
 export interface IUpdateUserController {
   handle(
@@ -13,5 +13,5 @@ export interface IUpdateUserController {
 }
 
 export interface IUpdateUserRepository {
-  updateUser(id: string, params: IUpdateUserParams): Promise<User>
+  updateUser(id: string, params?: IUpdateUserParams): Promise<User>
 }

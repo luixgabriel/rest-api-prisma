@@ -14,7 +14,7 @@ export class PrismaUpdateUserRepository implements IUpdateUserRepository {
       data: {
         firstName: params.firstName,
         lastName: params.lastName,
-        email: params.email,
+        password: params.password,
       },
     })
     return updateUser
