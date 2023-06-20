@@ -1,21 +1,18 @@
 import { User } from '../../models/user'
-import { HttpRequest, HttpResponse } from '../protocols'
+import { HttpRequest, HttpResponse, IController } from '../protocols'
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
-import {
-  ICreateUserController,
-  ICreateUserParams,
-  ICreateUserRepository,
-} from './protocol'
+import { ICreateUserParams, ICreateUserRepository } from './protocol'
+import { badRequest, created, serverError } from '../helpers'
 
-export class CreateUserController implements ICreateUserController {
+export class CreateUserController implements IController {
   constructor(private readonly createUserRepository: ICreateUserRepository) {
     createUserRepository = this.createUserRepository
   }
 
   async handle(
     httpRequest: HttpRequest<ICreateUserParams>,
-  ): Promise<HttpResponse<User>> {
+  ): Promise<HttpResponse<User | string>> {
     const bodySchema = z.object({
       firstName: z.string().nonempty(),
       lastName: z.string().nonempty(),
@@ -26,25 +23,16 @@ export class CreateUserController implements ICreateUserController {
     try {
       let bodyRequest = bodySchema.parse(httpRequest.body)
       if (!bodyRequest) {
-        return {
-          statusCode: 400,
-          body: 'Please specify a body',
-        }
+        return badRequest('Please specify a body')
       }
       const hashedPassword = await bcrypt.hash(bodyRequest.password, 10)
 
       bodyRequest = { ...bodyRequest, password: hashedPassword }
 
       const user = await this.createUserRepository.createUser(bodyRequest)
-      return {
-        statusCode: 201,
-        body: user,
-      }
+      return created<User>(user)
     } catch (error) {
-      return {
-        statusCode: 500,
-        body: 'Something went wrong.',
-      }
+      return serverError()
     }
   }
 }
