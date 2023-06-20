@@ -9,7 +9,7 @@ routes.get('/', async (req: Request, res: Response) => {
   const prismaGetUsersRepository = new PrismaGetUsersRepository()
   const getUsersController = new GetUsersController(prismaGetUsersRepository)
   const { body, statusCode } = await getUsersController.handle()
-  res.send(body).status(statusCode)
+  res.status(statusCode).send(body)
 })
 
 routes.post('/users', async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ routes.post('/users', async (req: Request, res: Response) => {
     body: req.body,
   })
 
-  res.send(body).status(statusCode)
+  res.status(statusCode).send(body)
 })
 
 export default routes
