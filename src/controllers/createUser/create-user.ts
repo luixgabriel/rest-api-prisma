@@ -1,6 +1,7 @@
 import { User } from '../../models/user'
 import { HttpRequest, HttpResponse } from '../protocols'
 import { z } from 'zod'
+import bcrypt from 'bcrypt'
 import {
   ICreateUserController,
   ICreateUserParams,
@@ -23,13 +24,17 @@ export class CreateUserController implements ICreateUserController {
     })
 
     try {
-      const bodyRequest = bodySchema.parse(httpRequest.body)
+      let bodyRequest = bodySchema.parse(httpRequest.body)
       if (!bodyRequest) {
         return {
           statusCode: 400,
           body: 'Please specify a body',
         }
       }
+      const hashedPassword = await bcrypt.hash(bodyRequest.password, 10)
+
+      bodyRequest = { ...bodyRequest, password: hashedPassword }
+
       const user = await this.createUserRepository.createUser(bodyRequest)
       return {
         statusCode: 201,
