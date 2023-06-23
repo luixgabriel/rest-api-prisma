@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node src/server.ts"
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "devDependencies": {
